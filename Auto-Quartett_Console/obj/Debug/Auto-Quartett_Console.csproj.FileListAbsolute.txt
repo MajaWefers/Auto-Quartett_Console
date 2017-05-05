@@ -1,0 +1,6 @@
+C:\Users\M_Wb\Desktop\C#_Projekte\Auto-Quartett_Console\Auto-Quartett_Console\bin\Debug\Auto-Quartett_Console.exe.config
+C:\Users\M_Wb\Desktop\C#_Projekte\Auto-Quartett_Console\Auto-Quartett_Console\obj\Debug\Auto-Quartett_Console.csprojResolveAssemblyReference.cache
+C:\Users\M_Wb\Desktop\C#_Projekte\Auto-Quartett_Console\Auto-Quartett_Console\bin\Debug\Auto-Quartett_Console.exe
+C:\Users\M_Wb\Desktop\C#_Projekte\Auto-Quartett_Console\Auto-Quartett_Console\bin\Debug\Auto-Quartett_Console.pdb
+C:\Users\M_Wb\Desktop\C#_Projekte\Auto-Quartett_Console\Auto-Quartett_Console\obj\Debug\Auto-Quartett_Console.exe
+C:\Users\M_Wb\Desktop\C#_Projekte\Auto-Quartett_Console\Auto-Quartett_Console\obj\Debug\Auto-Quartett_Console.pdb
