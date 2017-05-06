@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Reflection;
 
 namespace Auto_Quartett_Console
 {
@@ -11,62 +12,80 @@ namespace Auto_Quartett_Console
         public struct Autokarte
         {
             public string modell;
-            public int    geschwindigkeit;
-            public int    leistung;
+            public int geschwindigkeit;
+            public int leistung;
             public double verbrauch;
-            public int    zylinder;
+            public int zylinder;
             public double hubraum;
             public double beschleunigung;
-            public int    zuladung;
-            public int    ladevolumen;  // { get; set; }
+            public int zuladung;
+            public int ladevolumen;  // { get; set; }
 
-            //TODO: public Autokarte ohne auto_x davor
-            public static void Autokarte_fuellen (ref Autokarte auto_x,  string name, int speed, int leist, double verbr, 
-                                           int zyl, double hubr, double beschl, int zulad, int ladevol)
+            public Autokarte(string name, int speed, int leist, double verbr,
+                              int zyl, double hubr, double beschl, int zulad, int ladevol)
             {
-                auto_x.modell          = name;
-                auto_x.geschwindigkeit = speed;
-                auto_x.leistung        = leist;
-                auto_x.verbrauch       = verbr;
-                auto_x.zylinder        = zyl;
-                auto_x.hubraum         = hubr;
-                auto_x.beschleunigung  = beschl;
-                auto_x.zuladung        = zulad;
-                auto_x.ladevolumen     = ladevol;
+                modell = name;
+                geschwindigkeit = speed;
+                leistung = leist;
+                verbrauch = verbr;
+                zylinder = zyl;
+                hubraum = hubr;
+                beschleunigung = beschl;
+                zuladung = zulad;
+                ladevolumen = ladevol;
+            }
+
+            public static string GetWert(Autokarte auto_x, int wert)
+            {
+                return auto_x.modell;
+            }
+
+            public static int GetWert(int wert)
+            {
+                return wert;
+            }
+
+            public static double GetWert(double wert)
+            {
+                return wert;
             }
         }
-        
+
         //Autokarten werden erstellt
-        public static Autokarte auto1 = new Autokarte();
-        public static Autokarte auto2 = new Autokarte();
-        public static Autokarte auto3 = new Autokarte();
+        public static Autokarte auto1 = new Autokarte("VW Phaeton", 250, 309, 15.7, 12, 6, 6.7, 600, 500);
+        public static Autokarte auto2 = new Autokarte("VW New Beetle", 185, 85, 8.7, 4, 2, 10.9, 419, 527);
+        public static Autokarte auto3 = new Autokarte("VW Touareg", 225, 230, 12.2, 10, 4.9, 7.8, 600, 555);
+        public static Autokarte auto4 = new Autokarte();
+        public static Autokarte[] auto = new Autokarte[4] { auto1, auto2, auto3, auto4 };
+        //public static auto[] = { auto1, auto2, auto3, auto4 };
+
+        public static string[] eigenschaft = new string[9] {"Modell","Geschwindigkeit","Leistung","Verbrauch","Zylinder",
+                                              "Hubraum", "Beschleunigung","Zuladung","Ladevolumen" };
 
         //Variablen zur STEUERUNG
-        public static string nochmal;               //Für Steuerung des Hauptmenüs
-        public static int    ansicht_vergleich;     //Wahl, ob Ansicht oder Vergleich
-        public static int    vergleichsfeld;
-        public static bool   eingabe_korrekt;       //Grundlegende Eingabeprüfung
+        public static string nochmal;               //Steuerung des Hauptmenüs
+        public static int ansicht_vergleich;     //Wahl, ob Ansicht oder Vergleich
+        public static int vergleich;
+        public static bool eingabe_korrekt;       //Grundlegende Eingabeprüfung
+        public static Random nr = new Random();
+        public static int zufall1;
+        public static int zufall2;
 
-        //
-        public static bool   groesser;
-        public static string groesser_ges = "";     //
-        
+        //Variablen, um die Vergleichsergebnisse zu speichern
+        public static bool groesser;
         public static int zaehler_x;
         public static int zaehler_y;
 
         static void Main(string[] args)
         {
-            /*new Autokarte {beschleunigung=2,
-            modell="sf"
-            };*/
-            //Den Feldern der Autokarten Werte zuweisen
-            Autokarte.Autokarte_fuellen(ref auto1, "VW Phaeton", 250, 309, 15.7, 12, 6, 6.7, 600, 500);
-            Autokarte.Autokarte_fuellen(ref auto2, "VW New Beetle", 185, 85, 8.7, 4, 2, 10.9, 419, 527);
-            Autokarte.Autokarte_fuellen(ref auto3, "VW Touareg", 225, 230, 12.2, 10, 4.9, 7.8, 600, 555);
+            //TODO Neueingabe
+            //auto1 = new Autokarte ("VW Phaeton", 250, 309, 15.7, 12, 6, 6.7, 600, 500);
+            //auto2 = new Autokarte ("VW New Beetle", 185, 85, 8.7, 4, 2, 10.9, 419, 527);
+            //auto3 = new Autokarte ("VW Touareg", 225, 230, 12.2, 10, 4.9, 7.8, 600, 555);
+            auto4 = new Autokarte("VW XY", 170, 100, 10.7, 5, 3, 9.7, 400, 498);
 
-            //Benutzerfragen
+            //auto1.GetType.GetField("modell").GetValue();
             Menü_Steuerung();
-            
         }
 
         static void Menü_Steuerung()
@@ -77,29 +96,29 @@ namespace Auto_Quartett_Console
 
                 //Eingabeprüfung
                 ansicht_vergleich = Pruefe_Eingabe();
+                zufall1 = nr.Next(0, 3); //0 inklusiv, 3 exklusiv
 
                 if (ansicht_vergleich == 1)
                 {
                     Console.WriteLine();
-                    Zeige_einzelne_Karte(auto1);
-                    Zeige_einzelne_Karte(auto2);
-                    Zeige_einzelne_Karte(auto3);
+                    for (int i = 0; i < 2; i++)
+                    {
+                        Zeige_einzelne_Karte(auto[i]);
+                    }
                 }
                 if (ansicht_vergleich == 2)
                 {
                     Console.WriteLine();
                     Console.WriteLine("Ihre Spielkarte:");
-                    Zeige_einzelne_Karte(auto1);
+                    Zeige_einzelne_Karte(auto[zufall1]);
 
-                    vergleichsfeld = Vergleich_Auswahl(auto1);
-                    zaehler_x = 0;
-                    zaehler_y = 0;
+                    vergleich = Vergleich_Auswahl(auto[zufall1]);
 
-                    if (vergleichsfeld == 9)
+                    if (vergleich == 9)
                     {
                         Vergleiche_alles();
                     }
-                    else if (vergleichsfeld == 10)
+                    else if (vergleich == 10)
                     {
                     }
                     else
@@ -131,33 +150,14 @@ namespace Auto_Quartett_Console
             return ansicht_vergleich;
         }
 
-        static void Vergleiche_alles()
-        {
-            Vergleich_Karten_Ausgabe(auto1,auto2,vergleichsfeld);
-            //groesser_ges = Alles_vergleichen(auto1, auto2);
-            Console.WriteLine();
-
-            groesser = zaehler_x > zaehler_y;
-            //Ausagbe des Vergleichsergebnisses
-
-            if (groesser)
-            {
-                Console.WriteLine("Insgesamt siegt " + auto1.modell.ToUpper() +
-                                    " mit " + zaehler_x + " zu " + zaehler_y +
-                                    " über " + auto2.modell.ToUpper() + ".");
-            }
-            else
-            {
-                Console.WriteLine("Insgesamt siegt " + auto2.modell.ToUpper() +
-                                    " mit " + zaehler_y + " zu " + zaehler_x +
-                                    " über " + auto1.modell.ToUpper() + ".");
-            }
-            Console.WriteLine();
-        }
-
         static void Vergleiche_einen_Wert()
         {
-            groesser = Vergleich_Karten_Ausgabe(auto1, auto2, vergleichsfeld);
+            do
+            {
+                zufall2 = nr.Next(0, 3);
+            } while (zufall1 == zufall2);
+
+            groesser = Vergleich_Karten_Ausgabe(auto[zufall1], auto[zufall2], vergleich);
             Console.WriteLine();
 
             if (groesser)
@@ -173,6 +173,38 @@ namespace Auto_Quartett_Console
                 Console.ResetColor();
             }
 
+            Console.WriteLine();
+        }
+
+        static void Vergleiche_alles()
+        {
+            //Zurücksetzen des Zählers: Für die Ausgabe, wie viele Werte pro Auto groesser sind (s.u. if)
+            zaehler_x = 0;
+            zaehler_y = 0;
+
+            do
+            {
+                zufall2 = nr.Next(0, 2);
+            } while (zufall1 == zufall2);
+
+            //In dieser Funktion wird auch der Zaehler hochgezählt
+            Vergleich_Karten_Ausgabe(auto[zufall1], auto[zufall2], vergleich);
+            Console.WriteLine();
+            
+            groesser = zaehler_x > zaehler_y;
+
+            //Ausagbe des Vergleichsergebnisses
+            if (groesser)
+            {
+                Console.WriteLine(auto[zufall1].modell + " SIEGT insgesamt mit "
+                                  + zaehler_x + " zu " + zaehler_y +
+                                  " über " + auto[zufall2].modell + ".");
+            }
+            else
+            {
+                Console.WriteLine(auto[zufall1].modell + " VERLIERT insgesamt mit "
+                                  + zaehler_x + " zu " + zaehler_y + ".");
+            }
             Console.WriteLine();
         }
 
@@ -211,7 +243,7 @@ namespace Auto_Quartett_Console
             do
             {
                 eingabe_korrekt = Int32.TryParse(Console.ReadLine(), out vergleich_wahl);
-               
+                
                 if (   vergleich_wahl != 1 && vergleich_wahl != 2 && vergleich_wahl != 3 && vergleich_wahl != 4
                     && vergleich_wahl != 5 && vergleich_wahl != 6 && vergleich_wahl != 7 && vergleich_wahl != 8
                     && vergleich_wahl != 9 && vergleich_wahl != 10)
@@ -226,86 +258,91 @@ namespace Auto_Quartett_Console
             return vergleich_wahl;
         }
 
-        public static bool Vergleich_Karten_Ausgabe(Autokarte auto_x, Autokarte auto_y, int vergleichsfeld)
+        //Diese Funktion wird sowohl für den Vergleich eines einzelnen Wertes als auch für den Vergleich aller Werte genutzt.
+        //Sie wird zu Beginn der Funktionen aufgerufen.
+        public static bool Vergleich_Karten_Ausgabe(Autokarte auto_x, Autokarte auto_y, int vergleich)
         {
             string laengster_string = "Ladevolumen:     " + auto_x.ladevolumen + " Liter";
 
-            //groesser = Wert_pruefen(auto_x, auto_y, vergleichsfeld);
+            //groesser = Wert_pruefen(auto_x, auto_y, vergleich);
 
+            //Zeile MODELL
             Ausgabe_x(laengster_string, auto_x.modell.ToUpper());
             Ausgabe_y(                  auto_y.modell.ToUpper());
-            //Ist das entsprechende Vergleichsfeld ausgewählt, prüft Wert_pruefen, ob auto_x > auto_y groesser ist.
-            //Für den ausgewählten Vergleich wird die entsprechende Farbe pro Auto gesetzt. 
-            if (vergleichsfeld == 1 || vergleichsfeld == 9)
-            {
-                Farbe_setzen_auto_x(groesser = auto_x.geschwindigkeit > auto_y.geschwindigkeit);
-            }
+
+            //Ist der entsprechende Vergleich ausgewählt, wird für den/die Wert/e geprüft, ob auto_x > auto_y groesser ist.
+            //Für den ausgewählten Vergleich wird die entsprechende Farbe pro Auto gesetzt.
+            //Ebenso wird in den Funktionen "Farbe_setzen" auch der Zähler für die Ausgabe in "Vergleiche_alles()" hochgezählt.
+
+            //Zeile GESCHWINDIGKEIT
+            if (vergleich == 1 || vergleich == 9)
+            { Farbe_setzen_auto_x(groesser = auto_x.geschwindigkeit > auto_y.geschwindigkeit); }
             Ausgabe_x(laengster_string, "Geschwindigkeit: " + auto_x.geschwindigkeit + " kmh");
 
-            if (vergleichsfeld == 1 || vergleichsfeld == 9) { Farbe_setzen_auto_y(groesser); }
+            if (vergleich == 1 || vergleich == 9)
+            { Farbe_setzen_auto_y(groesser); }
             Ausgabe_y(                  "Geschwindigkeit: " + auto_y.geschwindigkeit + " kmh");
 
-            if (vergleichsfeld == 2 || vergleichsfeld == 9)
-            {
-                Farbe_setzen_auto_x(groesser = auto_x.leistung > auto_y.leistung);
-            }
+            //Zeile LEISTUNG
+            if (vergleich == 2 || vergleich == 9)
+            { Farbe_setzen_auto_x(groesser = auto_x.leistung > auto_y.leistung); }
             Ausgabe_x(laengster_string, "Leistung:        " + auto_x.leistung + " kW");
 
-            if (vergleichsfeld == 2 || vergleichsfeld == 9) { Farbe_setzen_auto_y(groesser); }
+            if (vergleich == 2 || vergleich == 9)
+            { Farbe_setzen_auto_y(groesser); }
             Ausgabe_y(                  "Leistung:        " + auto_y.leistung + " kW");
 
-            if (vergleichsfeld == 3 || vergleichsfeld == 9)
-            {
-                Farbe_setzen_auto_x(groesser = auto_x.verbrauch > auto_y.verbrauch);
-            }
+            //Zeile VERBRAUCH
+            if (vergleich == 3 || vergleich == 9)
+            { Farbe_setzen_auto_x(groesser = auto_x.verbrauch > auto_y.verbrauch); }
             Ausgabe_x(laengster_string, "Verbrauch:       " + auto_x.verbrauch + " Liter");
 
-            if (vergleichsfeld == 3 || vergleichsfeld == 9) { Farbe_setzen_auto_y(groesser); }
+            if (vergleich == 3 || vergleich == 9)
+            { Farbe_setzen_auto_y(groesser); }
             Ausgabe_y(                  "Verbrauch:       " + auto_y.verbrauch + " Liter");
 
-            if (vergleichsfeld == 4 || vergleichsfeld == 9)
-            {
-                Farbe_setzen_auto_x(groesser = auto_x.zylinder > auto_y.zylinder);
-            }
+            //Zeile ZYLINDER
+            if (vergleich == 4 || vergleich == 9)
+            { Farbe_setzen_auto_x(groesser = auto_x.zylinder > auto_y.zylinder); }
             Ausgabe_x(laengster_string, "Zylinder:        " + auto_x.zylinder + " Zyl");
 
-            if (vergleichsfeld == 4 || vergleichsfeld == 9) { Farbe_setzen_auto_y(groesser); }
+            if (vergleich == 4 || vergleich == 9)
+            { Farbe_setzen_auto_y(groesser); }
             Ausgabe_y(                  "Zylinder:        " + auto_y.zylinder + " Zyl");
 
-            if (vergleichsfeld == 5 || vergleichsfeld == 9)
-            {
-                Farbe_setzen_auto_x(groesser = auto_x.hubraum > auto_y.hubraum);
-            }
+            //Zeile HUBRAUM
+            if (vergleich == 5 || vergleich == 9)
+            { Farbe_setzen_auto_x(groesser = auto_x.hubraum > auto_y.hubraum); }
             Ausgabe_x(laengster_string, "Hubraum:         " + auto_x.hubraum + " Liter");
 
-            if (vergleichsfeld == 5 || vergleichsfeld == 9) { Farbe_setzen_auto_y(groesser); }
+            if (vergleich == 5 || vergleich == 9) { Farbe_setzen_auto_y(groesser); }
             Ausgabe_y(                  "Hubraum:         " + auto_y.hubraum + " Liter");
 
-            if (vergleichsfeld == 6 || vergleichsfeld == 9)
-            {
-                Farbe_setzen_auto_x(groesser = auto_x.beschleunigung > auto_y.beschleunigung);
-            }
+            //Zeile BESCHLEUNIGUNG
+            if (vergleich == 6 || vergleich == 9)
+            { Farbe_setzen_auto_x(groesser = auto_x.beschleunigung > auto_y.beschleunigung); }
             Ausgabe_x(laengster_string, "Beschleunigung:  " + auto_x.beschleunigung + " sec");
 
-            if (vergleichsfeld == 6 || vergleichsfeld == 9) { Farbe_setzen_auto_y(groesser); }
+            if (vergleich == 6 || vergleich == 9)
+            { Farbe_setzen_auto_y(groesser); }
             Ausgabe_y(                  "Beschleunigung:  " + auto_y.beschleunigung + " sec");
 
-            if (vergleichsfeld == 7 || vergleichsfeld == 9)
-            {
-                Farbe_setzen_auto_x(groesser = auto_x.zuladung > auto_y.zuladung);
-            }
+            //Zeile ZULADUNG
+            if (vergleich == 7 || vergleich == 9)
+            { Farbe_setzen_auto_x(groesser = auto_x.zuladung > auto_y.zuladung); }
             Ausgabe_x(laengster_string, "Zuladung:        " + auto_x.zuladung + " kg");
 
-            if (vergleichsfeld == 7 || vergleichsfeld == 9) { Farbe_setzen_auto_y(groesser); }
+            if (vergleich == 7 || vergleich == 9)
+            { Farbe_setzen_auto_y(groesser); }
             Ausgabe_y(                  "Zuladung:        " + auto_y.zuladung + " kg");
 
-            if (vergleichsfeld == 8 || vergleichsfeld == 9)
-            {
-                Farbe_setzen_auto_x(groesser = auto_x.ladevolumen > auto_y.ladevolumen);
-            }
+            //Zeile LADEVOLUMEN
+            if (vergleich == 8 || vergleich == 9)
+            { Farbe_setzen_auto_x(groesser = auto_x.ladevolumen > auto_y.ladevolumen); }
             Ausgabe_x(laengster_string, "Ladevolumen:     " + auto_x.ladevolumen + " Liter");
 
-            if (vergleichsfeld == 8 || vergleichsfeld == 9) { Farbe_setzen_auto_y(groesser);      }
+            if (vergleich == 8 || vergleich == 9)
+            { Farbe_setzen_auto_y(groesser);      }
             Ausgabe_y(                  "Ladevolumen:     " + auto_y.ladevolumen + " Liter");
             
             return groesser;
@@ -346,6 +383,7 @@ namespace Auto_Quartett_Console
             if (groesser)
             {
                 Console.ForegroundColor = ConsoleColor.Green;
+                //Für die Ausgabe in "Vergleiche_alles()"
                 zaehler_x++;
             }
             else
@@ -364,152 +402,31 @@ namespace Auto_Quartett_Console
             else
             {
                 Console.ForegroundColor = ConsoleColor.Green;
+                //Für die Ausgabe in "Vergleiche_alles()"
                 zaehler_y++;
             }
             return groesser;
         }
+        
+        /*static int laengster_string()
+        {
+            int laenge = eigenschaft[0].Length;
+            for (int i = 1; i <= 8; i++)
+            {
+                if (eigenschaft[i].Length > laenge)
+                {
+                    laenge = eigenschaft[i].Length;
+                }
+            }
+            return laenge;
+        }*/
+
+        /*static void eigenschaft_ (int i)
+        {
+            Autokarte[] eigenschaft_ = new Autokarte[9] { auto[i].modell, auto[i].geschwindigkeit, auto[i].leistung,
+                                                         auto[i].verbrauch, auto[i].zylinder, auto[i].hubraum,
+                                                         auto[i].beschleunigung, auto[i].zuladung, auto[i].ladevolumen };
+        }*/
+
     }
 }
-
-
-/* public static string Alles_vergleichen(Autokarte auto_x, Autokarte auto_y)
- {
-     string laengster_string = "Ladevolumen:     " + auto_x.ladevolumen + " Liter";
-     int vergleichsfeld = 0;
-     //Zaehlervariablen zurücksetzen
-     zaehler_x = 0;
-     zaehler_y = 0;
-
-     //AUSGABE
-     Ausgabe_x(laengster_string, auto_x.modell.ToUpper());
-     Ausgabe_y(auto_y.modell.ToUpper());
-
-     vergleichsfeld = 1;
-         groesser = Wert_pruefen(auto_x, auto_y, vergleichsfeld);
-         zaehler_plus(groesser, ref zaehler_x, ref zaehler_y);
-
-         Farbe_setzen_auto_x(groesser);
-         Ausgabe_x(laengster_string, "Geschwindigkeit: " + auto_x.geschwindigkeit + " kmh");
-
-         Farbe_setzen_auto_y(groesser);
-         Ausgabe_y("Geschwindigkeit: " + auto_y.geschwindigkeit + " kmh");
-
-     vergleichsfeld = 2;
-         groesser = Wert_pruefen(auto_x, auto_y, vergleichsfeld);
-         zaehler_plus(groesser, ref zaehler_x, ref zaehler_y);
-
-         Farbe_setzen_auto_x(groesser);
-         Ausgabe_x(laengster_string, "Leistung:        " + auto_x.leistung + " kW");
-
-         Farbe_setzen_auto_y(groesser);
-         Ausgabe_y("Leistung:        " + auto_y.leistung + " kW");
-
-     vergleichsfeld = 3;
-         groesser = Wert_pruefen(auto_x, auto_y, vergleichsfeld);
-         zaehler_plus(groesser, ref zaehler_x, ref zaehler_y);
-
-         Farbe_setzen_auto_x(groesser);
-         Ausgabe_x(laengster_string, "Verbrauch:       " + auto_x.verbrauch + " Liter");
-
-         Farbe_setzen_auto_y(groesser);
-         Ausgabe_y("Verbrauch:       " + auto_y.verbrauch + " Liter");
-
-     vergleichsfeld = 4;
-         groesser = Wert_pruefen(auto_x, auto_y, vergleichsfeld);
-         zaehler_plus(groesser, ref zaehler_x, ref zaehler_y);
-
-         Farbe_setzen_auto_x(groesser);
-         Ausgabe_x(laengster_string, "Zylinder:        " + auto_x.zylinder + " Zyl");
-
-         Farbe_setzen_auto_y(groesser);
-         Ausgabe_y("Zylinder:        " + auto_y.zylinder + " Zyl");
-
-     vergleichsfeld = 5;
-         groesser = Wert_pruefen(auto_x, auto_y, vergleichsfeld);
-         zaehler_plus(groesser, ref zaehler_x, ref zaehler_y);
-
-         Farbe_setzen_auto_x(groesser);
-         Ausgabe_x(laengster_string, "Hubraum:         " + auto_x.hubraum + " Liter");
-
-         Farbe_setzen_auto_y(groesser);
-         Ausgabe_y("Hubraum:         " + auto_y.hubraum + " Liter");
-
-     vergleichsfeld = 6;
-         groesser = Wert_pruefen(auto_x, auto_y, vergleichsfeld);
-         zaehler_plus(groesser, ref zaehler_x, ref zaehler_y);
-
-         Farbe_setzen_auto_x(groesser);
-         Ausgabe_x(laengster_string, "Beschleunigung:  " + auto_x.beschleunigung + " sec");
-
-         Farbe_setzen_auto_y(groesser);
-         Ausgabe_y("Beschleunigung:  " + auto_y.beschleunigung + " sec");
-
-     vergleichsfeld = 7;
-         groesser = Wert_pruefen(auto_x, auto_y, vergleichsfeld);
-         zaehler_plus(groesser, ref zaehler_x, ref zaehler_y);
-
-         Farbe_setzen_auto_x(groesser);
-         Ausgabe_x(laengster_string, "Zuladung:        " + auto_x.zuladung + " kg");
-
-         Farbe_setzen_auto_y(groesser);
-         Ausgabe_y("Zuladung:        " + auto_y.zuladung + " kg");
-
-     vergleichsfeld = 8;
-         groesser = Wert_pruefen(auto_x, auto_y, vergleichsfeld);
-         zaehler_plus(groesser, ref zaehler_x, ref zaehler_y);
-
-         Farbe_setzen_auto_x(groesser);
-         Ausgabe_x(laengster_string, "Ladevolumen:     " + auto_x.ladevolumen + " Liter");
-
-         Farbe_setzen_auto_y(groesser);
-         Ausgabe_y("Ladevolumen:     " + auto_y.ladevolumen + " Liter");
-
-     //Zurückgegeben werden beide Werte als String.
-     //Da nur ein Rückgabewert möglich ist, soll so ein Zugriff auf beide Ergebnisse erfolgen.
-     return zaehler_x.ToString() + zaehler_y.ToString();
- }*/
-
-/*public static void zaehler_plus(bool groesser, ref int zaehler_x, ref int zaehler_y)
-{
-if (groesser)
-{
-    zaehler_x++;
-}
-else
-{
-    zaehler_y++;
-}
-}*/
-
-/*public static bool Wert_pruefen(Autokarte auto_x, Autokarte auto_y, int vergleichsfeld)
-{
-    bool groesser = true;
-    switch (vergleichsfeld)
-    {
-        case 1:
-            groesser = auto_x.geschwindigkeit > auto_y.geschwindigkeit;
-            break;
-        case 2:
-            groesser = auto_x.leistung > auto_y.leistung;
-            break;
-        case 3:
-            groesser = auto_x.verbrauch > auto_y.verbrauch;
-            break;
-        case 4:
-            groesser = auto_x.zylinder > auto_y.zylinder;
-            break;
-        case 5:
-            groesser = auto_x.hubraum > auto_y.hubraum;
-            break;
-        case 6:
-            groesser = auto_x.beschleunigung > auto_y.beschleunigung;
-            break;
-        case 7:
-            groesser = auto_x.zuladung > auto_y.zuladung;
-            break;
-        case 8:
-            groesser = auto_x.ladevolumen > auto_y.ladevolumen;
-            break;
-    }
-    return groesser;
-}*/
