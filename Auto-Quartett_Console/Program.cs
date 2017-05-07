@@ -35,20 +35,10 @@ namespace Auto_Quartett_Console
                 ladevolumen = ladevol;
             }
 
-            public static string GetWert(Autokarte auto_x, int wert)
-            {
-                return auto_x.modell;
-            }
-
-            public static int GetWert(int wert)
+            /*public static double GetWert(double wert)
             {
                 return wert;
-            }
-
-            public static double GetWert(double wert)
-            {
-                return wert;
-            }
+            }*/
         }
 
         //Autokarten werden erstellt
@@ -59,14 +49,24 @@ namespace Auto_Quartett_Console
         public static Autokarte[] auto = new Autokarte[4] { auto1, auto2, auto3, auto4 };
         //public static auto[] = { auto1, auto2, auto3, auto4 };
 
+        public static string[] einheit = new string[9] { "","kmh", "kW", "Liter", "Zyl", "Liter", "sec", "kg", "Liter" };
         public static string[] eigenschaft = new string[9] {"Modell","Geschwindigkeit","Leistung","Verbrauch","Zylinder",
-                                              "Hubraum", "Beschleunigung","Zuladung","Ladevolumen" };
+            "Hubraum", "Beschleunigung","Zuladung","Ladevolumen" };
+        public static string[] eigenschaft_ = new string[9] {"modell","geschwindigkeit","leistung","verbrauch","zylinder",
+            "hubraum", "beschleunigung","zuladung","ladevolumen" };
+        //Feldnamen des structs Autokarte werden hier gespeichert
+        //public static FieldInfo[] autofelder = typeof(Autokarte).GetType().GetFields();
+
 
         //Variablen zur STEUERUNG
-        public static string nochmal;               //Steuerung des Hauptmenüs
-        public static int ansicht_vergleich;     //Wahl, ob Ansicht oder Vergleich
-        public static int vergleich;
-        public static bool eingabe_korrekt;       //Grundlegende Eingabeprüfung
+        public static string nochmal;               //Wiederholung des Hauptmenüs
+        public static bool   eingabe_korrekt;       //Grundlegende Eingabeprüfung
+        //Menü-Eingabe, Wahl-Variablen
+        public static int    ansicht_vergleich;     //Wahl, ob Ansicht oder Vergleich
+        public static int    vergleich;             //Wahl, welcher Vergleich
+        
+        //Variablen für den VERGLEICH
+        //Zufallszahlen für die beim Vergleich angezeigten Autos
         public static Random nr = new Random();
         public static int zufall1;
         public static int zufall2;
@@ -83,8 +83,9 @@ namespace Auto_Quartett_Console
             //auto2 = new Autokarte ("VW New Beetle", 185, 85, 8.7, 4, 2, 10.9, 419, 527);
             //auto3 = new Autokarte ("VW Touareg", 225, 230, 12.2, 10, 4.9, 7.8, 600, 555);
             auto4 = new Autokarte("VW XY", 170, 100, 10.7, 5, 3, 9.7, 400, 498);
-
-            //auto1.GetType.GetField("modell").GetValue();
+            //eigenschaftsarray_erstellen();
+            //Console.WriteLine(eigenschaftszeile(auto1, 2));
+            //Console.WriteLine(auto1.GetType().GetField(eigenschaft_[1]).GetValue(auto1));
             Menü_Steuerung();
         }
 
@@ -101,7 +102,8 @@ namespace Auto_Quartett_Console
                 if (ansicht_vergleich == 1)
                 {
                     Console.WriteLine();
-                    for (int i = 0; i < 2; i++)
+                    //TODO Kein fester Wert "3" -> ist zu ändern bei weiterer Karten-Eingabe
+                    for (int i = 0; i < 3; i++)
                     {
                         Zeige_einzelne_Karte(auto[i]);
                     }
@@ -118,6 +120,7 @@ namespace Auto_Quartett_Console
                     {
                         Vergleiche_alles();
                     }
+                    //Abbruch des Spiels
                     else if (vergleich == 10)
                     {
                     }
@@ -213,14 +216,18 @@ namespace Auto_Quartett_Console
             Console.ForegroundColor = ConsoleColor.Blue;
             Console.WriteLine(auto_x.modell.ToUpper());
             Console.ResetColor();
-            Console.WriteLine("Geschwindigkeit: " + auto_x.geschwindigkeit + " kmh");
+            for (int i = 1; i < 9; i++)
+            {
+                Console.WriteLine(eigenschaftszeile(auto_x, i));
+            }
+            /*Console.WriteLine("Geschwindigkeit: " + auto_x.geschwindigkeit + " kmh");
             Console.WriteLine("Leistung:        " + auto_x.leistung + " kW");
             Console.WriteLine("Verbrauch:       " + auto_x.verbrauch + " Liter");
             Console.WriteLine("Zylinder:        " + auto_x.zylinder + " Zyl");
             Console.WriteLine("Hubraum:         " + auto_x.hubraum + " Liter");
             Console.WriteLine("Beschleunigung:  " + auto_x.beschleunigung + " sec");
             Console.WriteLine("Zuladung:        " + auto_x.zuladung + " kg");
-            Console.WriteLine("Ladevolumen:     " + auto_x.ladevolumen + " Liter");
+            Console.WriteLine("Ladevolumen:     " + auto_x.ladevolumen + " Liter");*/
             Console.WriteLine();
         }
 
@@ -262,12 +269,19 @@ namespace Auto_Quartett_Console
         //Sie wird zu Beginn der Funktionen aufgerufen.
         public static bool Vergleich_Karten_Ausgabe(Autokarte auto_x, Autokarte auto_y, int vergleich)
         {
-            string laengster_string = "Ladevolumen:     " + auto_x.ladevolumen + " Liter";
-
+            //string laengster_string = "Ladevolumen:     " + auto_x.ladevolumen + " Liter";
             //groesser = Wert_pruefen(auto_x, auto_y, vergleich);
 
             //Zeile MODELL
-            Ausgabe_x(laengster_string, auto_x.modell.ToUpper());
+            Ausgabe_x(auto_x, 0);
+            Ausgabe_y(auto_y, 0);
+
+            for (int i = 1; i < 9; i++)
+            {
+                Vergleich(auto_x, auto_y, vergleich, i);
+            }
+
+            /*Ausgabe_x(laengster_string, auto_x.modell.ToUpper());
             Ausgabe_y(                  auto_y.modell.ToUpper());
 
             //Ist der entsprechende Vergleich ausgewählt, wird für den/die Wert/e geprüft, ob auto_x > auto_y groesser ist.
@@ -343,31 +357,94 @@ namespace Auto_Quartett_Console
 
             if (vergleich == 8 || vergleich == 9)
             { Farbe_setzen_auto_y(groesser);      }
-            Ausgabe_y(                  "Ladevolumen:     " + auto_y.ladevolumen + " Liter");
+            Ausgabe_y(                  "Ladevolumen:     " + auto_y.ladevolumen + " Liter");*/
             
             return groesser;
         }
 
-        public static void Ausgabe_x(string laengster_string, string auto_feld)
+        static public void Vergleich(Autokarte auto_x, Autokarte auto_y, int vergleich, int i)
+        {
+            groesser = groesser_ermitteln(auto_x,auto_y,i);
+
+            //AUSGABE mit Farbsetzung
+            if (vergleich == i || vergleich == 9)
+            { Farbe_setzen_auto_x(groesser); }
+            Ausgabe_x(auto_x, i);
+
+            if (vergleich == i || vergleich == 9)
+            { Farbe_setzen_auto_y(groesser); }
+            Ausgabe_y(auto_y, i);
+        }
+
+        static public bool groesser_ermitteln(Autokarte auto_x, Autokarte auto_y, int i)
+        {
+            int u;
+            bool erfolg = Int32.TryParse(auto_x.GetType().GetField(eigenschaft_[i]).GetValue(auto_x).ToString(), out u);
+            if (erfolg)
+            {
+                int auto_x_eigenschaft = Convert.ToInt32(auto_x.GetType().GetField(eigenschaft_[i]).GetValue(auto_x).ToString());
+                int auto_y_eigenschaft = Convert.ToInt32(auto_y.GetType().GetField(eigenschaft_[i]).GetValue(auto_y).ToString());
+                groesser = auto_x_eigenschaft
+                           > auto_y_eigenschaft;
+            }
+            else
+            {
+                double auto_x_eigenschaft = Convert.ToDouble(auto_x.GetType().GetField(eigenschaft_[i]).GetValue(auto_x).ToString());
+                double auto_y_eigenschaft = Convert.ToDouble(auto_y.GetType().GetField(eigenschaft_[i]).GetValue(auto_y).ToString());
+                groesser = auto_x_eigenschaft
+                           > auto_y_eigenschaft;
+            }
+            return groesser;
+        }
+
+        /*public static void Ausgabe_x(string laengster_string, string auto_feld)
         {
             //Ausgabe von auto_x und dem Trennungsstrich "--"
-            string laenge_lz = "";
+            /*string laenge_lz = "";
             Console.Write(lz_abstand(  laengster_string,
                                        auto_feld,
                                        out laenge_lz
                                     )
                           );
             Console.ResetColor();
-            Console.Write(laenge_lz + "--   ");
+            Console.Write(laenge_lz + "--   ");      
+        }*/
+
+        public static void Ausgabe_x(Autokarte auto_x,int i)
+        {
+            string laengster_str = laengste_kartenzeile(auto_x);
+            string lz = "";
+            int leerz = laengster_str.Length - eigenschaftszeile(auto_x, i).Length;
+            for (int k = 0; k < leerz + 3; k++)
+            {
+                lz += " ";
+            }
+            Console.Write(eigenschaftszeile(auto_x, i));
+            Console.ResetColor();
+            Console.Write(lz + "--   ");
         }
 
-        public static void Ausgabe_y(string auto_feld)
+        public static void Ausgabe_y(Autokarte auto_y, int i)
         {
-            Console.WriteLine(auto_feld);
+            Console.WriteLine(eigenschaftszeile(auto_y, i));
             Console.ResetColor();
         }
 
-        static string lz_abstand (string laengster_str, string text2, out string lz)
+        /*public static void Ausgabe_y(string autofeld_zeile)
+        {
+            Console.WriteLine(autofeld_zeile);
+            Console.ResetColor();
+        }*/
+
+       /* public static void eigenschaftsarray_erstellen()
+        {
+            for (int i = 0; i < 9; i++)
+            {
+                eigenschaft_[i] = autofelder[i].ToString();
+            }
+        }*/
+
+        /*static string lz_abstand (string laengster_str, string text2, out string lz)
         {
             lz = "";
             int leerz = laengster_str.Length - text2.Length;
@@ -376,10 +453,67 @@ namespace Auto_Quartett_Console
                 lz += " ";
             } 
             return text2;
+        }*/
+
+        static string eigenschaftszeile(Autokarte auto_x, int i)
+        {
+            string kartenzeile = "";
+            if (i == 0)
+            {
+                kartenzeile = auto_x.GetType().GetField(eigenschaft_[i]).GetValue(auto_x).ToString().ToUpper();
+            }
+            else
+            {
+                kartenzeile = eigenschaft_str(i) + auto_x.GetType().GetField(eigenschaft_[i]).GetValue(auto_x) + " " + einheit[i];
+            }
+            //auto_x.GetType().GetField("modell")
+            return kartenzeile;
+        }
+
+        static string laengste_kartenzeile(Autokarte auto_x)
+        {
+            //Wegen Modell erst mit Zeile 2 (= Index "1") der Karte anfangen
+            string laengste_kartenzeile = eigenschaft_str(1) + auto_x.GetType().GetField(eigenschaft_[1]).GetValue(auto_x) + " " + einheit[0];
+            for (int i = 2; i <= 8; i++)
+            {
+                string kartenzeile = eigenschaft_str(i) + 
+                                     auto_x.GetType().GetField(eigenschaft_[i]).GetValue(auto_x) + " " + einheit[i];
+                if (kartenzeile.Length > laengste_kartenzeile.Length)
+                {
+                    laengste_kartenzeile = kartenzeile;
+                }
+            }
+            return laengste_kartenzeile;
+        }
+
+        //Wie viele Leerzeichen sollen hinter die Eigenschaften
+        static string eigenschaft_str(int i)
+        {
+            string lz = "";
+            int leerz = laengster_str() - eigenschaft[i].Length;
+            for (int k = 0; k < leerz + 1; k++)
+            {
+                lz += " ";
+            }
+            return eigenschaft[i] + ":" + lz;
+        }
+
+        //Längster String für eigenschaft_str (Eigenschaft)
+        static int laengster_str()
+        {
+            int laenge = eigenschaft[1].Length;
+            for (int i = 2; i <= 8; i++)
+            {
+                if (eigenschaft[i].Length > laenge)
+                {
+                    laenge = eigenschaft[i].Length;
+                }
+            }
+            return laenge;
         }
 
         public static bool Farbe_setzen_auto_x(bool groesser)
-        {   
+        {
             if (groesser)
             {
                 Console.ForegroundColor = ConsoleColor.Green;
@@ -407,19 +541,6 @@ namespace Auto_Quartett_Console
             }
             return groesser;
         }
-        
-        /*static int laengster_string()
-        {
-            int laenge = eigenschaft[0].Length;
-            for (int i = 1; i <= 8; i++)
-            {
-                if (eigenschaft[i].Length > laenge)
-                {
-                    laenge = eigenschaft[i].Length;
-                }
-            }
-            return laenge;
-        }*/
 
         /*static void eigenschaft_ (int i)
         {
