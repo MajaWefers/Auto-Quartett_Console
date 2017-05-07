@@ -67,6 +67,7 @@ namespace Auto_Quartett_Console
 
         //Variablen, um die Vergleichsergebnisse zu speichern
         public static bool groesser;
+        public static bool gleichstand;
         public static int zaehler_x;
         public static int zaehler_y;
 
@@ -161,7 +162,7 @@ namespace Auto_Quartett_Console
             }
             else
             {
-                bool gleichstand = gleichstand_ermitteln(auto[zufall1], auto[zufall2],vergleich);
+                //wird ermittelt in Vergleich_Karten_Ausgabe()
                 if (  gleichstand )
                 {
                     Console.ForegroundColor = ConsoleColor.Blue;
@@ -175,7 +176,6 @@ namespace Auto_Quartett_Console
                     Console.ResetColor();
                 }
             }
-
             Console.WriteLine();
         }
 
@@ -290,11 +290,21 @@ namespace Auto_Quartett_Console
             //AUSGABE mit Farbsetzung
             if (vergleich == i || vergleich == 9)
             { Farbe_setzen_auto_x(groesser); }
+            //nur bei Gleichstand Farbe "Blau"
+            if (gleichstand == true)
+            { Console.ForegroundColor = ConsoleColor.Blue; }
             Ausgabe_x(auto_x, i);
+            Console.ResetColor();
 
-            if (vergleich == i || vergleich == 9)
+            if ((vergleich == i || vergleich == 9) && gleichstand == false)
             { Farbe_setzen_auto_y(groesser); }
+            //nur bei Gleichstand Farbe "Blau"
+            if (gleichstand == true)
+            { Console.ForegroundColor = ConsoleColor.Blue; }
             Ausgabe_y(auto_y, i);
+            Console.ResetColor();
+
+            gleichstand = false;
         }
 
         public static void Ausgabe_x(Autokarte auto_x,int i)
@@ -405,46 +415,33 @@ namespace Auto_Quartett_Console
 
         static public bool groesser_ermitteln(Autokarte auto_x, Autokarte auto_y, int i)
         {
-            int u;
-            bool erfolg = Int32.TryParse(auto_x.GetType().GetField(eigenschaft_[i]).GetValue(auto_x).ToString(), out u);
+            gleichstand = false;
+            int zahl;
+            bool erfolg = Int32.TryParse(auto_x.GetType().GetField(eigenschaft_[i]).GetValue(auto_x).ToString(), out zahl);
             if (erfolg)
             {
                 int auto_x_eigenschaft = Convert.ToInt32(auto_x.GetType().GetField(eigenschaft_[i]).GetValue(auto_x));
                 int auto_y_eigenschaft = Convert.ToInt32(auto_y.GetType().GetField(eigenschaft_[i]).GetValue(auto_y));
-                groesser = auto_x_eigenschaft
+                groesser =   auto_x_eigenschaft
                            > auto_y_eigenschaft;
+                if (!groesser)
+                {
+                    gleichstand = auto_x_eigenschaft == auto_y_eigenschaft;
+                }
             }
             else
             {
                 double auto_x_eigenschaft = Convert.ToDouble(auto_x.GetType().GetField(eigenschaft_[i]).GetValue(auto_x));
                 double auto_y_eigenschaft = Convert.ToDouble(auto_y.GetType().GetField(eigenschaft_[i]).GetValue(auto_y));
-                groesser = auto_x_eigenschaft
+                groesser =   auto_x_eigenschaft
                            > auto_y_eigenschaft;
+                if (!groesser)
+                {
+                    gleichstand = auto_x_eigenschaft == auto_y_eigenschaft;
+                }
             }
             //TODO   if (!groesser)
             return groesser;
         }
-
-        static public bool gleichstand_ermitteln(Autokarte auto_x, Autokarte auto_y, int vergleich)
-        {
-            int u;
-            bool gleichstand = true;
-            bool erfolg = Int32.TryParse(auto_x.GetType().GetField(eigenschaft_[vergleich]).GetValue(auto_x).ToString(), out u);
-            if (erfolg)
-            {
-                int auto_x_eigenschaft = Convert.ToInt32(auto_x.GetType().GetField(eigenschaft_[vergleich]).GetValue(auto_x));
-                int auto_y_eigenschaft = Convert.ToInt32(auto_y.GetType().GetField(eigenschaft_[vergleich]).GetValue(auto_y));
-                gleichstand = auto_x_eigenschaft == auto_y_eigenschaft;
-            }
-            else
-            {
-                double auto_x_eigenschaft = Convert.ToDouble(auto_x.GetType().GetField(eigenschaft_[vergleich]).GetValue(auto_x));
-                double auto_y_eigenschaft = Convert.ToDouble(auto_y.GetType().GetField(eigenschaft_[vergleich]).GetValue(auto_y));
-                gleichstand = auto_x_eigenschaft == auto_y_eigenschaft;
-            }
-            return gleichstand;
-        }
-
-
     }
 }
