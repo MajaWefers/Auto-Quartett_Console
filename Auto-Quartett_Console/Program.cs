@@ -10,54 +10,12 @@ namespace Auto_Quartett_Console
 {
     class Program
     {
-        public struct Autokarte
-        {
-            public string modell;
-            public int geschwindigkeit;
-            public int leistung;
-            public double verbrauch;
-            public int zylinder;
-            public double hubraum;
-            public double beschleunigung;
-            public int zuladung;
-            public int ladevolumen;  // { get; set; }
-
-            public Autokarte(string name, int speed, int leist, double verbr,
-                              int zyl, double hubr, double beschl, int zulad, int ladevol)
-            {
-                modell = name;
-                geschwindigkeit = speed;
-                leistung = leist;
-                verbrauch = verbr;
-                zylinder = zyl;
-                hubraum = hubr;
-                beschleunigung = beschl;
-                zuladung = zulad;
-                ladevolumen = ladevol;
-            }
-
-            public static string GetWert(Autokarte auto_x, int wert)
-            {
-                return auto_x.modell;
-            }
-
-            public static int GetWert(int wert)
-            {
-                return wert;
-            }
-
-            public static double GetWert(double wert)
-            {
-                return wert;
-            }
-        }
-
         //Autokarten werden erstellt
-        public static Autokarte auto1 = new Autokarte("VW Phaeton", 250, 309, 15.7, 12, 6, 6.7, 600, 500);
-        public static Autokarte auto2 = new Autokarte("VW New Beetle", 185, 85, 8.7, 4, 2, 10.9, 419, 527);
-        public static Autokarte auto3 = new Autokarte("VW Touareg", 225, 230, 12.2, 10, 4.9, 7.8, 600, 555);
-        public static Autokarte auto4 = new Autokarte();
-        public static Autokarte[] auto = new Autokarte[4] { auto1, auto2, auto3, auto4 };
+        public static Autokarte[] autos = new Autokarte[4] {
+            new Autokarte("VW Phaeton", 250, 309, 15.7, 12, 6, 6.7, 600, 500),
+            new Autokarte("VW New Beetle", 185, 85, 8.7, 4, 2, 10.9, 419, 527),
+            new Autokarte("VW Touareg", 225, 230, 12.2, 10, 4.9, 7.8, 600, 555),
+            new Autokarte() };
         //public static auto[] = { auto1, auto2, auto3, auto4 };
 
         public static string[] eigenschaft = new string[9] {"Modell","Geschwindigkeit","Leistung","Verbrauch","Zylinder",
@@ -80,12 +38,7 @@ namespace Auto_Quartett_Console
         static void Main(string[] args)
         {
             //TODO Neueingabe
-            //auto1 = new Autokarte ("VW Phaeton", 250, 309, 15.7, 12, 6, 6.7, 600, 500);
-            //auto2 = new Autokarte ("VW New Beetle", 185, 85, 8.7, 4, 2, 10.9, 419, 527);
-            //auto3 = new Autokarte ("VW Touareg", 225, 230, 12.2, 10, 4.9, 7.8, 600, 555);
-            auto4 = new Autokarte("VW XY", 170, 100, 10.7, 5, 3, 9.7, 400, 498);
-
-            //auto1.GetType.GetField("modell").GetValue();
+            
             Menü_Steuerung();
         }
 
@@ -104,16 +57,16 @@ namespace Auto_Quartett_Console
                     Console.WriteLine();
                     for (int i = 0; i < 2; i++)
                     {
-                        Zeige_einzelne_Karte(auto[i]);
+                        Zeige_einzelne_Karte(autos[i]);
                     }
                 }
                 if (ansicht_vergleich == 2)
                 {
                     Console.WriteLine();
                     Console.WriteLine("Ihre Spielkarte:");
-                    Zeige_einzelne_Karte(auto[zufall1]);
+                    Zeige_einzelne_Karte(autos[zufall1]);
 
-                    vergleich = Vergleich_Auswahl(auto[zufall1]);
+                    vergleich = Vergleich_Auswahl(autos[zufall1]);
 
                     if (vergleich == 9)
                     {
@@ -158,7 +111,7 @@ namespace Auto_Quartett_Console
                 zufall2 = nr.Next(0, 3);
             } while (zufall1 == zufall2);
 
-            groesser = Vergleich_Karten_Ausgabe(auto[zufall1], auto[zufall2], vergleich);
+            groesser = Vergleich_Karten_Ausgabe(autos[zufall1], autos[zufall2], vergleich);
             Console.WriteLine();
 
             if (groesser)
@@ -189,7 +142,7 @@ namespace Auto_Quartett_Console
             } while (zufall1 == zufall2);
 
             //In dieser Funktion wird auch der Zaehler hochgezählt
-            Vergleich_Karten_Ausgabe(auto[zufall1], auto[zufall2], vergleich);
+            Vergleich_Karten_Ausgabe(autos[zufall1], autos[zufall2], vergleich);
             Console.WriteLine();
             
             groesser = zaehler_x > zaehler_y;
@@ -197,13 +150,13 @@ namespace Auto_Quartett_Console
             //Ausagbe des Vergleichsergebnisses
             if (groesser)
             {
-                Console.WriteLine(auto[zufall1].modell + " SIEGT insgesamt mit "
+                Console.WriteLine(autos[zufall1].modell + " SIEGT insgesamt mit "
                                   + zaehler_x + " zu " + zaehler_y +
-                                  " über " + auto[zufall2].modell + ".");
+                                  " über " + autos[zufall2].modell + ".");
             }
             else
             {
-                Console.WriteLine(auto[zufall1].modell + " VERLIERT insgesamt mit "
+                Console.WriteLine(autos[zufall1].modell + " VERLIERT insgesamt mit "
                                   + zaehler_x + " zu " + zaehler_y + ".");
             }
             Console.WriteLine();
