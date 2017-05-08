@@ -16,10 +16,10 @@ namespace Auto_Quartett_Console
             new Autokarte("VW New Beetle", 185, 85, 8.7, 4, 2, 10.9, 419, 527),
             new Autokarte("VW Touareg", 225, 230, 12.2, 10, 4.9, 7.8, 600, 555),
             new Autokarte() };
-        //public static auto[] = { auto1, auto2, auto3, auto4 };
 
-        public static string[] eigenschaft = new string[9] {"Modell","Geschwindigkeit","Leistung","Verbrauch","Zylinder",
-                                              "Hubraum", "Beschleunigung","Zuladung","Ladevolumen" };
+        public static string[] eigenschaft = new string[9] {"modell", "geschwindigkeit","leistung","verbrauch","zylinder",
+                                              "hubraum", "beschleunigung","zuladung","ladevolumen" };
+        public static string[] einheit = new string[9] { "", "kmh", "kW", "Liter", "Zyl", "Liter", "sec", "kg", "Liter" };
 
         //Variablen zur STEUERUNG
         public static string nochmal;               //Steuerung des Hauptmenüs
@@ -361,7 +361,7 @@ namespace Auto_Quartett_Console
             }
             return groesser;
         }
-        
+
         /*static int laengster_string()
         {
             int laenge = eigenschaft[0].Length;
@@ -375,11 +375,80 @@ namespace Auto_Quartett_Console
             return laenge;
         }*/
 
-        /*static void eigenschaft_ (int i)
+        /*public static void Ausgabe_x(Autokarte auto_x, int i)
         {
-            Autokarte[] eigenschaft_ = new Autokarte[9] { auto[i].modell, auto[i].geschwindigkeit, auto[i].leistung,
-                                                         auto[i].verbrauch, auto[i].zylinder, auto[i].hubraum,
-                                                         auto[i].beschleunigung, auto[i].zuladung, auto[i].ladevolumen };
+            string laengster_str = laengste_kartenzeile(auto_x);
+            string lz = "";
+            int leerz = laengster_str.Length - eigenschaftszeile(auto_x, i).Length;
+            for (int k = 0; k < leerz + 3; k++)
+            {
+                lz += " ";
+            }
+            Console.Write(eigenschaftszeile(auto_x, i));
+            Console.ResetColor();
+            Console.Write(lz + "--   ");
+        }
+
+        public static void Ausgabe_y(Autokarte auto_y, int i)
+        {
+            Console.WriteLine(eigenschaftszeile(auto_y, i));
+            Console.ResetColor();
+        }
+
+        static string eigenschaftszeile(Autokarte auto_x, int i)
+        {
+            string kartenzeile = "";
+            if (i == 0)
+            {
+                kartenzeile = auto_x.GetType().GetField(eigenschaft[i]).GetValue(auto_x).ToString().ToUpper();
+            }
+            else
+            {
+                kartenzeile = eigenschaft_str(i) + auto_x.GetType().GetField(eigenschaft[i]).GetValue(auto_x) + " " + einheit[i];
+            }
+            return kartenzeile;
+        }
+
+        static string laengste_kartenzeile(Autokarte auto_x)
+        {
+            //Wegen Modell erst mit Zeile 2 (= Index "1") der Karte anfangen
+            string laengste_kartenzeile = eigenschaft_str(1) + auto_x.GetType().GetField(eigenschaft[1]).GetValue(auto_x) + " " + einheit[0];
+            for (int i = 2; i <= 8; i++)
+            {
+                string kartenzeile = eigenschaft_str(i) +
+                                     auto_x.GetType().GetField(eigenschaft[i]).GetValue(auto_x) + " " + einheit[i];
+                if (kartenzeile.Length > laengste_kartenzeile.Length)
+                {
+                    laengste_kartenzeile = kartenzeile;
+                }
+            }
+            return laengste_kartenzeile;
+        }
+
+        //Wie viele Leerzeichen sollen hinter die Eigenschaften
+        static string eigenschaft_str(int i)
+        {
+            string lz = "";
+            int leerz = laengster_str() - eigenschaft[i].Length;
+            for (int k = 0; k < leerz + 1; k++)
+            {
+                lz += " ";
+            }
+            return eigenschaft[i] + ":" + lz;
+        }
+
+        //Längster String für eigenschaft_str (Eigenschaft)
+        static int laengster_str()
+        {
+            int laenge = eigenschaft[1].Length;
+            for (int i = 2; i <= 8; i++)
+            {
+                if (eigenschaft[i].Length > laenge)
+                {
+                    laenge = eigenschaft[i].Length;
+                }
+            }
+            return laenge;
         }*/
 
     }
